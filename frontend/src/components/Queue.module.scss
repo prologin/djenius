@@ -1,0 +1,12 @@
+@import "../Theme";
+
+.heading {
+  align-self: center;
+}
+
+.queue {
+  @include gridItem;
+  grid-area: queue;
+  display: flex;
+  flex-direction: column;
+}

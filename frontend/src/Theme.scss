@@ -1,0 +1,178 @@
+$bg: #333;
+$text: #fefefe;
+$transition-time: .25s;
+
+$normalWeight: 300;
+$boldWeight: 600;
+
+$voteDownColor: #ca4d4d;
+$voteUpColor: adjust_hue($voteDownColor, 90);
+$promoteColor: #af66ee;
+$banColor: #cc9133;
+
+.emptyContent {
+  position: relative;
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paddedIcon {
+  margin: 0 1rem;
+}
+
+.scrollArea {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.coverArt {
+  grid-area: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: 0 0 8px rgba(255, 255, 255, .2);
+}
+
+@mixin gridItem() {
+  // magic!
+  min-height: 0;
+}
+
+@mixin overlay() {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 99;
+  cursor: default;
+}
+
+.button {
+  border: none;
+  padding: .5rem;
+  outline: none;
+  font-size: smaller;
+  border-radius: .3rem;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+@mixin button($col, $rev: inherit, $margin: 0, $border: true) {
+  transition: all ease $transition-time;
+  outline: none;
+  &:disabled { cursor: default; }
+  &::-moz-focus-inner {
+    // lol Firefox.
+    border: 0;
+  }
+  &:not(:last-child) {
+    margin-right: $margin;
+  }
+  // non-active or active-hover
+  &, &.active:not(:disabled):hover {
+    color: $col;
+    @if $border { border: 1px solid $col; }
+    background-color: $bg;
+  }
+  // active or non-active hover
+  &.active, &:not(.active):not(:disabled):hover {
+    color: $rev;
+    @if $border { border: 1px solid transparent; }
+    background-color: $col;
+  }
+}
+
+@mixin slider($primary-color, $height, $tick-color: white) {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: $height;
+
+  & .handles, & .tracks, & .ticks {
+    position: relative;
+    margin: 0 $height/2 0 0;
+  }
+
+  & .rail {
+    position: absolute;
+    width: 100%;
+    height: $height;
+    background-color: lighten($bg, 10);
+    border-radius: $height/2;
+  }
+
+  & .track {
+    border-radius: 0 $height/2 $height/2 0;
+    &, &::before {
+      position: absolute;
+      height: $height;
+      z-index: 1;
+      background-color: $primary-color;
+      margin: 0 $height/2;
+    }
+    &::before {
+      content: '';
+      width: $height;
+      margin-left: -$height/2;
+      border-radius: $height/2;
+    }
+  }
+
+  & .handle {
+    $w: $height + 1rem;
+    $h: $w;
+    position: absolute;
+    opacity: 0;
+    width: $w;
+    height: $h;
+    margin-left: -$w/2;
+    margin-top: -$h/2 + $height/2;
+    z-index: 2;
+  }
+
+  & .tick {
+    position: absolute;
+    &:after, &:before {
+      position: absolute;
+      color: $tick-color;
+      width: 1rem;
+      height: 1rem;
+      font-size: .6rem;
+      margin-left: -.3ch;
+    }
+    &:after {
+      top: -1em;
+      content: '\25BE';
+    }
+    &:before {
+      top: calc(#{$height} - .5em);
+      content: '\25B4';
+    }
+  }
+}
+
+.togglerWithIcon {
+  $m: .5rem;
+  align-self: center;
+  display: inline-flex;
+  flex-direction: row;
+  padding: $m / 2;
+  margin-right: $m;
+  &:first-of-type {
+    margin-left: $m;
+  }
+  background-color: $bg;
+  align-items: center;
+  & > span {
+    padding: 0 $m / 2;
+  }
+  &, & > input {
+    cursor: pointer;
+  }
+}

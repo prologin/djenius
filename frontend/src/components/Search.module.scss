@@ -1,0 +1,77 @@
+@import "../Theme";
+
+.search {
+  grid-area: search;
+  @include gridItem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.spaceBetween {
+  justify-content: space-between;
+}
+
+.button {
+  align-self: center;
+  width: 2.2rem;
+  margin: 0 .5rem 0 0;
+  @include button($text, $bg);
+}
+
+.clearSearch {
+  align-self: stretch;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+  padding: 0 1rem;
+  background: none;
+  border: none;
+  outline: none;
+  color: inherit;
+  visibility: hidden;
+
+  &:hover svg {
+    transform: scale(1.5);
+  }
+
+  &.visible {
+    visibility: visible;
+  }
+}
+
+.searchInput {
+  flex-grow: 1;
+  padding: .5rem 0;
+  font: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  color: inherit;
+
+  &::placeholder {
+    color: inherit;
+  }
+}
+
+.searchLibrary {
+  $m: .5rem;
+  align-self: center;
+  display: inline-flex;
+  flex-direction: row;
+  padding: $m / 2 $m;
+  margin-right: $m;
+  border: none;
+  background-color: $bg;
+  align-items: center;
+  cursor: pointer;
+  @include button($text, $bg, $border: false);
+}
+
+.searchResults {
+}

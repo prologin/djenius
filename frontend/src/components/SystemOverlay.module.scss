@@ -1,0 +1,14 @@
+@import "../Theme";
+
+.systemOverlay {
+  @include overlay;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+
+  &.connected {
+    display: none;
+  }
+}

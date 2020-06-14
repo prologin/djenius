@@ -1,0 +1,31 @@
+@import "../Theme";
+
+.title {
+  font-weight: $boldWeight;
+}
+
+.title {
+  align-self: end;
+}
+
+.infoLine, .resolver {
+  align-self: start;
+}
+
+.noArtist {
+  font-style: italic;
+}
+
+.tag {
+  background: #ebebeb;
+  color: #333333;
+  text-transform: uppercase;
+  font-size: 65%;
+  text-rendering: optimizeLegibility;
+  border-radius: 3px;
+  padding: 1px 3px;
+
+  &:not(:first-child) {
+    margin-left: .5rem;
+  }
+}

@@ -1,0 +1,99 @@
+@import "../Theme";
+@import "SongCard.theme";
+
+$height: 3.5rem;
+
+.songCard {
+  display: grid;
+  grid-template-areas: "cover duration title votes" "cover resolver info votes";
+  grid-column-gap: 1rem;
+  grid-row-gap: .1rem;
+  grid-template-columns: $height auto 1fr;
+  align-items: stretch;
+  transition: background-color ease .3s;
+  height: $height;
+  border-bottom: 1px solid lighten($bg, 10);
+  padding: 0 .5rem 0 0;
+  flex-shrink: 0;
+  background-color: $bg;
+
+  &:hover {
+    background-color: lighten($bg, 5);
+    & .extra {
+      display: initial;
+    }
+  }
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.duration {
+  align-self: flex-end;
+}
+
+.resolver {
+  grid-area: resolver;
+  margin: .2rem auto 0;
+}
+
+.title {
+  grid-area: title;
+  margin: 0;
+}
+
+.infoLine {
+  grid-area: info;
+}
+
+.title, .infoLine {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.duration {
+  grid-area: duration;
+  text-align: center;
+}
+
+.votes {
+  grid-area: votes;
+  align-self: center;
+}
+
+.voteCount {
+  padding-right: .5rem;
+}
+
+.extra {
+  display: none;
+}
+
+$margin: .5rem;
+
+.promoted {
+  color: $promoteColor;
+}
+
+.suggest {
+  @include button(darken($text, 10), $bg, $margin: $margin)
+}
+
+.ban {
+  @include button($banColor, $margin: $margin)
+}
+
+.promote {
+  @include button($promoteColor, $margin: $margin)
+}
+
+.voteDown {
+  @include button($voteDownColor, $margin: $margin)
+}
+
+.voteUp {
+  @include button($voteUpColor, $margin: $margin)
+}

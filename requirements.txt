@@ -1,0 +1,5 @@
+aiohttp==3.6.2
+aioprometheus==20.0.0
+dataclasses_json==0.5.1
+sortedcontainers==2.2.2
+whoosh==2.7.4

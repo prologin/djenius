@@ -1,0 +1,56 @@
+@import "Theme";
+
+html, body, :global(#root) {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  cursor: default;
+}
+
+body {
+  font-family: "Liberation Sans", sans-serif;
+  font-weight: $normalWeight;
+  font-size: 14px;
+  color: #efefef;
+  background: #333;
+}
+
+strong {
+  font-weight: $boldWeight;
+}
+
+:global(#root) {
+  display: grid;
+  grid-template-areas: "header header" "player search" "controller search" "queue search" "eventlog search";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto auto 1fr;
+  grid-column-gap: 1rem;
+  min-height: 0;
+
+  @media (max-width: 720px) {
+    grid-template-areas: "header" "player" "controller" "search" "queue";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto 1fr;
+  }
+}
+
+
+.header {
+  grid-area: header;
+  padding: 1rem 2rem;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  > h1 {
+    z-index: 2;
+    flex: 1;
+    margin: 0;
+    padding: 0;
+  }
+}

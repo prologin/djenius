@@ -1,0 +1,68 @@
+@import "../Theme";
+
+.heading {
+  align-self: center;
+}
+
+.eventLog {
+  @include gridItem;
+  grid-area: eventlog;
+  display: flex;
+  flex-direction: column;
+
+  //@include overlay;
+  //
+  //display: flex;
+  //align-items: center;
+  //justify-content: center;
+  //
+  //opacity: 0;
+  //pointer-events: none;
+  //
+  //&:target, &.modalVisible {
+  //  opacity: 1;
+    //pointer-events: auto;
+  //}
+  //
+  //& > div {
+  //  background-color: $bg;
+  //  box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+  //  width: 50%;
+  //  padding: 1rem;
+  //
+  //  h1 {
+  //    margin: 0;
+  //    margin-bottom: 1rem;
+  //  }
+  //}
+
+  table {
+    width: 100%;
+  }
+
+  .actor, .action, .subject {
+    padding: .5rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .actor {
+  }
+
+  .action {
+    text-align: center;
+  }
+
+  .subject {
+    //font-style: italic;
+    width: 100%;
+    max-width: 0;
+  }
+
+  .upVoteColor { color: $voteUpColor; }
+  .downVoteColor { color: $voteDownColor; }
+  .promoteColor { color: $promoteColor; }
+  .banColor { color: $banColor; }
+
+}
