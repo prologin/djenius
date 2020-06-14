@@ -1,5 +1,7 @@
 import binascii
 import io
+import os
+import shutil
 
 import pytest
 
@@ -38,11 +40,13 @@ async def base_test_resolver(resolver):
     await resolver.cleanup()
 
 
+@pytest.mark.skipif(shutil.which("youtube-dl") is None, reason="youtube-dl binary not available")
 @pytest.mark.asyncio
 async def test_youtube(tmp_path):
     await base_test_resolver(YouTube())
 
 
+@pytest.mark.skipif(os.getenv("DESPOTIFY_URL", None) is None, reason="despotify server not available")
 @pytest.mark.asyncio
 async def test_spotify(tmp_path):
     await base_test_resolver(Spotify())
