@@ -93,10 +93,12 @@ class MpvClient:
         self.transport, self.protocol = await loop.create_connection(
             protocol_factory, host, port
         )
-        self.tasks = [asyncio.create_task(self._status_reader()), asyncio.create_task(self._message_reader())]
+        self.tasks = [
+            asyncio.create_task(self._status_reader()),
+            asyncio.create_task(self._message_reader()),
+        ]
         done, pending = await asyncio.wait(
-            self.tasks,
-            return_when=asyncio.FIRST_EXCEPTION,
+            self.tasks, return_when=asyncio.FIRST_EXCEPTION,
         )
         exc = [f.exception() for f in done]
         logging.info("mpv connect_and_run returned; exceptions if any: %r", exc)

@@ -34,6 +34,7 @@ class ISong:
 
     Has some denormalized state (eg. vote_cache) for performance.
     """
+
     song: Song
     state: SongState = SongState.new
     play_count: int = 0
