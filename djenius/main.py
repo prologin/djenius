@@ -178,7 +178,7 @@ class Main:
             url = Settings.resolver_search_url(resolver)
             async with http.get(url, params={"q": query, "limit": n}) as resp:
                 songs = await resp.json()
-                songs = [Song.from_dict(s) for s in songs]
+                songs = [Song.from_dict(s) for s in songs]  # type: ignore
                 songs = list(dedupe(await self.songs.add_all(songs, user)))
                 if songs:
                     await channel.put(songs)
@@ -336,7 +336,7 @@ class Main:
                 return
 
             if msg.filter == "Library":
-                songs = list(self.list_songs(user, msg.offset))
+                songs = list(self.list_songs(user, msg.offset or 0))
                 if songs[-1] is None:
                     if songs[:-1]:
                         await self.send_to(
@@ -357,7 +357,7 @@ class Main:
                     )
                 return
 
-            channel = asyncio.Queue()
+            channel: asyncio.Queue = asyncio.Queue()
 
             async def result_sender():
                 while True:

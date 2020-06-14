@@ -31,7 +31,7 @@ class Resolver:
         """
         raise NotImplementedError()
 
-    async def download(self, opaque: str) -> AsyncGenerator[None, bytes]:
+    async def download(self, opaque: str) -> AsyncGenerator[bytes, None]:
         """
         Download the song.
 
@@ -39,7 +39,7 @@ class Resolver:
         """
         raise NotImplementedError()
 
-    async def cover(self, opaque: str) -> AsyncGenerator[None, bytes]:
+    async def cover(self, opaque: str) -> AsyncGenerator[bytes, None]:
         """
         Download the cover.
 
@@ -48,7 +48,7 @@ class Resolver:
         raise NotImplementedError()
 
 
-async def _download_chunked(url, **kwargs) -> AsyncGenerator[None, bytes]:
+async def _download_chunked(url, **kwargs) -> AsyncGenerator[bytes, None]:
     async with aiohttp.ClientSession() as http:
         async with http.get(url, **kwargs) as resp:
             async for chunk in resp.content.iter_chunked(32 * 1024):

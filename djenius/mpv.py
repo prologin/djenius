@@ -143,6 +143,7 @@ class MpvClient:
 
     async def _call(self, *command) -> Any:
         this_id = next(self.id)
+        channel: asyncio.Queue
         channel = self.pending_requests[this_id] = asyncio.Queue(1)
         message = (
             json.dumps({"request_id": this_id, "command": list(command)}).encode()
@@ -150,7 +151,7 @@ class MpvClient:
         )
         self.transport.write(message)
         try:
-            response = await asyncio.wait_for(channel.get(), 1.5)
+            response: dict = await asyncio.wait_for(channel.get(), 1.5)
             success = response.get("error") == "success"
             if not success:
                 error = response.get("error", "unknown")

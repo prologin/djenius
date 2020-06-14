@@ -62,7 +62,7 @@ class ISong:
         self.votes.clear()
         self.vote_cache = 0
 
-    def set_vote(self, user_id: str, value: int):
+    def set_vote(self, user_id: UserId, value: int):
         if value == 0:
             self.votes.pop(user_id, None)
         else:
@@ -76,7 +76,7 @@ class ISong:
 class SongRegistry:
     def __init__(self, song_search: ISongSearch, auth_provider: AuthProvider):
         # State.
-        self._songs: MutableMapping[SongId, ISong] = SortedDict(self._rank_lookup)
+        self._songs = SortedDict(self._rank_lookup)
         self._song_map: MutableMapping[SongId, ISong] = {}
         self._admin_songs: List[ISong] = []
 
@@ -85,7 +85,7 @@ class SongRegistry:
         self._auth_provider = auth_provider
 
         # Signals.
-        self.song_updated_signal = asyncio.Queue(maxsize=1)
+        self.song_updated_signal: asyncio.Queue = asyncio.Queue(maxsize=1)
 
     def dump_state(self, fobj: BinaryIO):
         state = {
@@ -265,13 +265,17 @@ class SongRegistry:
         return self.for_anonymous_display(song.song.id)
 
     def _stateful_kwargs(self, song: ISong) -> Mapping[str, Any]:
+        added_by = None
+        if (
+            song.added_by is not None
+            and (user := self._auth_provider.get_user(song.added_by)) is not None
+        ):
+            added_by = user.id
         return dict(
             song=song.song,
             state=song.state,
             review_required=song.song.review_required(),
-            added_by=None
-            if song.added_by is None
-            else self._auth_provider.get_user(song.added_by).id,
+            added_by=added_by,
             added_on="" if song.added_on is None else song.added_on.isoformat(),
             play_count=song.play_count,
             votes=song.vote_cache,

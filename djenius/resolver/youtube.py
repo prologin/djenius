@@ -3,7 +3,7 @@ from typing import Optional
 import asyncio
 import logging
 import re
-from dataclasses_json import dataclass_json
+from dataclasses_json import dataclass_json  # type: ignore
 
 from djenius.proto import SongId, CoverId, Song
 from djenius.resolver import (
@@ -39,7 +39,9 @@ def _first_of(*args):
 
 
 def _make_song(result: YouTubeDlResult):
-    cover_id = REGEXP_THUMB.search(result.thumbnail).group(1) or "unavailable"
+    cover_id = "unavailable"
+    if (m := REGEXP_THUMB.search(result.thumbnail)) is not None:
+        cover_id = m.group(1) or "unavailable"
     return Song(
         id=SongId(f"youtube/{result.id}"),
         cover_id=CoverId(f"youtube/{cover_id}"),
@@ -68,7 +70,7 @@ class YouTube(Resolver):
             stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await p.communicate()
-        results = [YouTubeDlResult.from_json(line) for line in stdout.splitlines()]
+        results = [YouTubeDlResult.from_json(line) for line in stdout.splitlines()]  # type: ignore
         return [
             song
             for result in results

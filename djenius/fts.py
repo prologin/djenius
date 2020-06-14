@@ -2,9 +2,9 @@ import abc
 import asyncio
 from pathlib import Path
 from typing import Iterable
-import whoosh.fields
-import whoosh.index
-import whoosh.qparser
+import whoosh.fields  # type: ignore
+import whoosh.index  # type: ignore
+import whoosh.qparser  # type: ignore
 
 from djenius.proto import SongId, Song
 

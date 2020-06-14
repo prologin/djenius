@@ -6,7 +6,7 @@ import dataclasses
 import enum
 import json
 from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, LetterCase
+from dataclasses_json import dataclass_json, LetterCase  # type: ignore
 from typing import Optional, List, Any, NewType, Set
 
 

@@ -22,6 +22,8 @@ no reason to change and may be cached for months.
 import asyncio
 import json
 import logging
+from typing import Awaitable, Callable
+
 import aiohttp.web
 
 import djenius.resolver
@@ -39,13 +41,13 @@ async def handle_search(request: aiohttp.web.Request):
     limit = int(request.query.get("limit"))
     method = getattr(_get_resolver(request), "search")
     results: djenius.resolver.SearchResults = await method(q, limit)
-    data = [json.loads(song.to_json()) for song in results]
+    data = [json.loads(song.to_json()) for song in results]  # type: ignore
     return aiohttp.web.json_response(data)
 
 
-async def _invoke_resolver_method(request: aiohttp.web.Request, method: str):
+async def _invoke_resolver_method(request: aiohttp.web.Request, method_name: str):
     opaque = request.match_info["opaque"]
-    method = getattr(_get_resolver(request), method)
+    method: Callable[[str], Awaitable] = getattr(_get_resolver(request), method_name)
     response = aiohttp.web.StreamResponse()
     await response.prepare(request)
     async for chunk in (await method(opaque)):
