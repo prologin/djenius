@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 def frontend_files():
     source = Path('frontend/build')
-    target = Path('frontend')
+    target = Path('djenius/www')
 
     dirs = defaultdict(list)
 
@@ -16,7 +16,7 @@ def frontend_files():
         dirs[target / relf.parent].append(f)
 
     for directory, targets in dirs.items():
-        yield (str(directory), [str(t) for t in targets])
+        yield str(directory), [str(t) for t in targets]
 
 
 setup(

@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
-
+        python-version: ['3.8']
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -19,17 +18,32 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -r requirements.txt -r requirements-dev.txt
-      - name: Test djenius
-        run: PYTHONPATH=. pytest test/
       - name: Check types with mypy
         run: mypy -p djenius
+      - name: Test djenius
+        run: PYTHONPATH=. pytest test/
 
-  build:
-    name: "Build JS bundle"
+  package:
+    name: "Build Python ${{ matrix.python-version }} package with Node ${{ matrix.node-version }}"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8']
+        node-version: ['14']
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14'
-      - run: cd frontend && yarn install && yarn run build
+          node-version: ${{ matrix.node-version }}
+      - name: Build optimized frontend bundle
+        run: cd frontend && yarn install && yarn run build
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build Python sdist
+        run: python setup.py sdist
+      - name: Upload Python sdist
+        uses: actions/upload-artifact@v2
+        with:
+          name: djenius-sdist
+          path: dist/
