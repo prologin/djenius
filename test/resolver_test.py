@@ -53,7 +53,7 @@ async def base_test_resolver(resolver):
     shutil.which("youtube-dl") is None, reason="youtube-dl binary not available"
 )
 @pytest.mark.asyncio
-async def test_youtube(tmp_path):
+async def test_youtube():
     await base_test_resolver(YouTube())
 
 
@@ -61,5 +61,5 @@ async def test_youtube(tmp_path):
     os.getenv("DESPOTIFY_URL", None) is None, reason="despotify server not available"
 )
 @pytest.mark.asyncio
-async def test_spotify(tmp_path):
+async def test_spotify():
     await base_test_resolver(Spotify())
