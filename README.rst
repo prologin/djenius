@@ -106,7 +106,7 @@ For development, requirements are:
 
 * Python 3.8+, virtualenv with ``requirements.txt`` and ``requirements-dev.txt`` (for testing)
 * Docker and docker-compose with ``devel/docker-compose.yml``, which takes care of spawning nginx with its cache.
-* Node and yarn
+* Node and yarn. Use ``cd frontend && yarn install`` to bootstrap the frontend.
 
 For production, requirements are:
 
@@ -116,25 +116,29 @@ For production, requirements are:
 Running in development
 ----------------------
 
+1. In a console, run the preconfigured nginx through docker-compose::
+
+    $ cd devel && docker-compose up
+
+1. In a console, spawn mpv and the TCP-UNIX bridge::
+
+    $ cd devel && ./mpv.sh
+
 1. In a console, run the resolver server::
 
-   $ python -m djenius.bin.resolver --logging=DEBUG --unix=./devel/sock/resolver.socket
+    $ python -m djenius.bin.resolver --logging=DEBUG --unix=./devel/sock/resolver.socket
 
 1. In a console, run the backend server::
 
-   $ python -m djenius.bin.backend --logging=DEBUG --unix=./devel/sock/backend.socket \
+    $ python -m djenius.bin.backend --logging=DEBUG --unix=./devel/sock/backend.socket \
         --whoosh-dir=/tmp/djraio-woosh \
         --auth=djenius_auth_dev.DevAuthProvider \
         --state-file=/tmp/djraio.pickle --mpv=127.0.0.1:6600 \
         --resolver=http://127.0.0.1:8000/resolve
-1. In a console, spawn mpv and the TCP-UNIX bridge::
 
-   $ cd devel && ./mpv.sh
+1. In a console, run the frontend::
 
-1. In a console, run the preconfigured nginx through docker-compose::
-
-   $ cd devel && docker-compose up
-
+    $ cd frontend && npm run start
 
 Running tests
 -------------
