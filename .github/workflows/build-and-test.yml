@@ -40,10 +40,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Build Python sdist
+      - name: Build djenius-base sdist
+        run: cd djenius-base && python setup.py sdist
+      - name: Build djenius sdist
         run: python setup.py sdist
-      - name: Upload Python sdist
+      - name: Upload Python sdists
         uses: actions/upload-artifact@v2
         with:
           name: djenius-sdist
-          path: dist/
+          path: |
+            dist/*.tar.gz
+            djenius-base/dist/*.tar.gz
