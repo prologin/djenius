@@ -26,11 +26,11 @@ setup(
     packages=find_namespace_packages(),
     data_files=list(frontend_files()),
     install_requires=[
-        'aiohttp~=3',
-        'aioprometheus~=20',
+        'aiohttp~=3.0',
+        'aioprometheus~=20.0',
         'dataclasses_json~=0.5',
-        'djenius_auth~=1',
-        'sortedcontainers~=2',
-        'whoosh~=2',
+        'djenius_auth~=1.0',
+        'sortedcontainers~=2.0',
+        'whoosh~=2.0',
     ],
 )

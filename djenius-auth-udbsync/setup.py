@@ -5,5 +5,5 @@ setup(
     author="Alexandre Macabies",
     version="1.0",
     packages=find_packages(),
-    install_requires=["ProloginSADM", "djenius-base"],
+    install_requires=["ProloginSADM", "djenius-base~=1.0"],
 )
