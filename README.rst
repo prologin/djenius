@@ -118,11 +118,11 @@ Running in development
 
 1. In a console, run the preconfigured nginx through docker-compose::
 
-    $ cd devel && docker-compose up
+    $ ( cd devel && docker-compose up )
 
 1. In a console, spawn mpv and the TCP-UNIX bridge::
 
-    $ cd devel && ./mpv.sh
+    $ ( cd devel && ./mpv.sh )
 
 1. In a console, run the resolver server::
 
@@ -138,7 +138,7 @@ Running in development
 
 1. In a console, run the frontend::
 
-    $ cd frontend && npm run start
+    $ ( cd frontend && npm run start )
 
 Running tests
 -------------
@@ -146,3 +146,17 @@ Running tests
 Use pytest::
 
    $ PYTHONPATH=.:djenius-base pytest test/
+
+Distributing
+------------
+
+1. Build optimized frontend bundle::
+
+    $ (c d frontend && npm run build )
+
+1. Build the Python sdist, which bundles the frontend assets::
+
+    $ ( cd djenius-base && python setup.py sdist )
+    $ python setup.py sdist
+
+Point the web server to the static files at ``<env-root>/djenius/www``.

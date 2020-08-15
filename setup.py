@@ -23,7 +23,7 @@ setup(
     name="djenius",
     author="Alexandre Macabies",
     version="1.0",
-    packages=find_namespace_packages(),
+    packages=find_namespace_packages(include=["djenius.*"]),
     data_files=list(frontend_files()),
     install_requires=[
         "aiohttp~=3.0",
