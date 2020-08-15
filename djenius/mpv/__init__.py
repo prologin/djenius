@@ -100,8 +100,8 @@ class MpvClient:
         done, pending = await asyncio.wait(
             self.tasks, return_when=asyncio.FIRST_EXCEPTION,
         )
-        exc = [f.exception() for f in done]
-        logging.info("mpv connect_and_run returned; exceptions if any: %r", exc)
+        exc = [e for f in done if (e := f.exception()) is not None]
+        logging.info("mpv connect_and_run returned, mpv or network crashed; exceptions: %r", exc)
 
     async def _status_reader(self):
         while True:

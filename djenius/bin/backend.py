@@ -8,9 +8,9 @@ from pathlib import Path
 
 import aiohttp.web
 
-import djenius.main
+import djenius.server.main
 from djenius.bin import CommandLineFeature, ListeningFeature, LoggingFeature, serve
-from djenius.settings import Settings
+from djenius.server.settings import Settings
 
 
 class AppFeatures(CommandLineFeature):
@@ -85,9 +85,9 @@ if __name__ == "__main__":
 
     logging.getLogger("aiohttp.access").setLevel(logging.WARNING)
 
-    main = djenius.main.Main()
+    main = djenius.server.main.Main()
     serve(
-        logger=djenius.main.logger,
+        logger=djenius.server.main.logger,
         routes=[aiohttp.web.get("/ws", main.ws_handler)],
         args=args,
         startup=main.on_init,

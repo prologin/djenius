@@ -1,6 +1,5 @@
 import abc
 from typing import Optional
-from aiohttp import web
 
 from djenius.proto import UserId, User
 
@@ -21,15 +20,15 @@ class AuthProvider(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_user_id(self, request: web.Request) -> Optional[UserId]:
+    def get_user_id(self, request: 'aiohttp.web.Request') -> Optional[UserId]:  # type: ignore
         """
-        Returns a user ID for the given request, or None.
+        Returns a :class:`djenius.proto.UserId` for the given request, or None.
         """
         ...
 
     @abc.abstractmethod
     def get_user(self, user_id: Optional[UserId]) -> Optional[User]:
         """
-        Returns a :class:`User` for the given user id, or None.
+        Returns a :class:`djenius.proto.User` for the given user id, or None.
         """
         ...

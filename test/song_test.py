@@ -4,7 +4,7 @@ from typing import Optional
 import pytest
 from aiohttp import web
 
-from djenius.song import SongRegistry
+from djenius.server.song import SongRegistry
 from djenius.proto import SongState, Song, UserId, Ability, User
 from djenius.fts import WhooshSongSearch
 from djenius.auth import AuthProvider

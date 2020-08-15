@@ -10,7 +10,7 @@ from djenius.resolver import (
     Resolver,
     _download_chunked,
 )
-from djenius.settings import Settings
+from djenius.server.settings import Settings
 
 logger = logging.getLogger(__name__)
 
