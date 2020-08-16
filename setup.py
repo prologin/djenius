@@ -23,6 +23,8 @@ setup(
     name="djenius",
     author="Alexandre Macabies",
     version="1.0",
+    description="A collaborative jukebox for no-Internet environments.",
+    url="https://github.com/prologin/djenius/",
     packages=find_namespace_packages(include=["djenius.*"]),
     data_files=list(frontend_files()),
     install_requires=[
@@ -32,5 +34,8 @@ setup(
         "djenius-base~=1.0",
         "sortedcontainers~=2.0",
         "whoosh~=2.0",
+    ],
+    classifiers=[
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
 )
