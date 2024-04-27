@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
     <script>
-        window.WS_ENDPOINT = ('%NODE_ENV%' === 'development') ?
-            `${window.location.hostname}:8000` : window.location.host;
+        window.WS_ENDPOINT = %REACT_APP_DJENIUS_SOCKET_HOST%;
     </script>
     <title>djenius</title>
 </head>

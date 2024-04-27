@@ -7,6 +7,9 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      DEV: 1
+      DJENIUS_SOCKET_HOST: nginx:80
     networks:
       - radio
 

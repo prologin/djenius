@@ -14,5 +14,5 @@ USER app
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["./entrypoint.sh"]
 
