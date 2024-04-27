@@ -20,4 +20,4 @@ RUN \
 
 COPY . .
 
-CMD ["./entrypoint.sh"]
+CMD ["./entrypoint-backend.sh"]

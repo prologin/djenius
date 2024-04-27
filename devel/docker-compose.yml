@@ -9,33 +9,37 @@ services:
       - "3000:3000"
     environment:
       DEV: 1
-      DJENIUS_SOCKET_HOST: nginx:80
+      DJENIUS_SOCKET_HOST: localhost:80
     networks:
       - radio
 
   backend:
     build:
       context: ../
+      dockerfile: Dockerfile.backend
     restart: unless-stopped
     ports:
       - "7000:8000"
     environment:
       DEBUG: 1
-      BACKEND: 1
       MPV: mpv:6600
-      RESOLVER: resolver:8000
+      RESOLVER: http://nginx:8000
+    volumes:
+      - ./sock:/sock:rw # expose unix domain sockets
     networks:
       - radio
 
   resolver:
     build:
       context: ../
+      dockerfile: Dockerfile.resolver
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       DEBUG: 1
-      BACKEND: 0
+    volumes:
+      - ./sock:/sock:rw # expose unix domain sockets
     networks:
       - radio
 

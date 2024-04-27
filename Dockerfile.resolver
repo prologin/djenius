@@ -1,0 +1,35 @@
+
+FROM python:3.8-alpine3.18 as youtube-dl-builder
+
+RUN \
+    apk update \
+    && apk add --no-cache \
+        curl \
+        git \
+        make \
+        zip \
+    && rm -rf /var/cache/apk/* \
+    && git clone --depth 1 https://github.com/ytdl-org/youtube-dl.git \
+    && cd youtube-dl/ \
+    && make youtube-dl \
+    && cp youtube-dl /bin/youtube-dl \
+    && chmod a+x /bin/youtube-dl
+
+FROM python:3.8-alpine3.18
+
+COPY --from=youtube-dl-builder /bin/youtube-dl /bin/youtube-dl
+COPY requirements.txt .
+
+RUN \
+    apk update && \
+    apk add --no-cache \
+        python3-dev \
+        gcc \
+        libc-dev \
+        libffi-dev && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /var/cache/apk/*
+
+COPY . .
+
+CMD ["./entrypoint-resolver.sh"]
