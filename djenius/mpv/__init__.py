@@ -170,6 +170,9 @@ class MpvClient:
                     await self.event_queue.put(MpvPositionChanged(pos))
                 except TypeError:
                     pass
+                except KeyError:
+                    logging.error(f"No 'data' in {event}")
+                    pass
             elif event["name"] == "volume":
                 try:
                     volume = int(event["data"])
