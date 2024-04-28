@@ -10,6 +10,12 @@ services:
     environment:
       DEV: 1
       DJENIUS_SOCKET_HOST: localhost:80
+      CHOKIDAR_USEPOLLING: "true" # Auto reload react
+      CHOKIDAR_INTERVAL: 1000
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../frontend:/home/app
+      - /home/app/node_modules
     networks:
       - radio
 
