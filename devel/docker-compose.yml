@@ -55,6 +55,11 @@ services:
     restart: unless-stopped
     ports:
       - "6600:6600"
+    environment:
+      PULSE_SERVER: unix:/run/user/1000/pulse/native
+    user: "1000:1000"
+    volumes:
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
     networks:
       - radio
 
