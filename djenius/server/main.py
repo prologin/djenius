@@ -189,7 +189,7 @@ class Main:
             await asyncio.wait(
                 [
                     resolver_search(http, "youtube"),
-                    resolver_search(http, "spotify"),
+                    # resolver_search(http, "spotify"),
                     local_search(),
                 ]
             )

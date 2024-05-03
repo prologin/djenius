@@ -22,14 +22,14 @@ REGEXP_THUMB = re.compile(r"https://i\.ytimg\.com/vi/(.+?)/.+?\.jpg")
 class YouTubeDlResult:
     id: str
     title: str
-    alt_title: Optional[str]
-    creator: Optional[str]
-    track: Optional[str]
-    artist: Optional[str]
-    album: Optional[str]
     view_count: int
     duration: int
     thumbnail: str
+    alt_title: Optional[str] = None
+    creator: Optional[str] = None
+    track: Optional[str] = None
+    artist: Optional[str] = None
+    album: Optional[str] = None
 
 
 def _first_of(*args):

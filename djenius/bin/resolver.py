@@ -67,7 +67,7 @@ async def startup(app):
     from djenius.resolver import spotify, youtube
 
     app["resolvers"] = {
-        "spotify": spotify.Spotify(),
+        # "spotify": spotify.Spotify(),
         "youtube": youtube.YouTube(),
     }
     await asyncio.wait([r.setup() for r in app["resolvers"].values()])

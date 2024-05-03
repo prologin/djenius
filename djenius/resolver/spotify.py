@@ -35,14 +35,18 @@ class Spotify(Resolver):
         url = f"{DESPOTIFY_URL}/search"
         params = {"q": query, "limit": limit, "category": "tracks"}
         async with aiohttp.ClientSession() as http:
-            async with http.get(url, params=params) as resp:
-                songs = await resp.json()
-                songs = [
-                    song
-                    for data in songs
-                    if (song := _make_song(data)).duration < Settings.MAX_SONG_DURATION
-                ]
-                return songs
+            try:
+                async with http.get(url, params=params) as resp:
+                    songs = await resp.json()
+                    songs = [
+                        song
+                        for data in songs
+                        if (song := _make_song(data)).duration < Settings.MAX_SONG_DURATION
+                    ]
+                    return songs
+            except Exception as e:
+                logger.error("Spotify search error")
+                return []
 
     async def download(self, song_id: str):
         return _download_chunked(f"{DESPOTIFY_URL}/download/spotify:track:{song_id}")
