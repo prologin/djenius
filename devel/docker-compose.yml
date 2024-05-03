@@ -17,7 +17,7 @@ services:
       - ../frontend:/home/app
       - /home/app/node_modules
     networks:
-      - radio
+      - frontend
 
   backend:
     build:
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./sock:/sock:rw # expose unix domain sockets
     networks:
-      - radio
+      - backend
 
   resolver:
     build:
@@ -61,7 +61,7 @@ services:
     volumes:
       - /run/user/1000/pulse/native:/run/user/1000/pulse/native
     networks:
-      - radio
+      - backend
 
   nginx:
     image: nginx:stable-alpine
@@ -74,7 +74,13 @@ services:
       - ../frontend/build:/srv/frontend:ro # expose React "static" build
     networks:
       - radio
+      - backend
+      - frontend
 
 networks:
   radio:
     name: radio
+  frontend:
+    internal: true
+  backend:
+    internal: true
