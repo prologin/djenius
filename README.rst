@@ -116,29 +116,23 @@ For production, requirements are:
 Running in development
 ----------------------
 
-1. In a console, run the preconfigured nginx through docker-compose::
+The development environment is entirely built on docker compose.
 
-    $ ( cd devel && docker-compose up )
+Hot-reload is supported for the frontend.
 
-1. In a console, spawn mpv and the TCP-UNIX bridge::
+Any change to djenius backend/resolver code will need a rebuild of the
+containers.
 
-    $ ( cd devel && ./mpv.sh )
+1. Go to the `devel` directory::
 
-1. In a console, run the resolver server::
+    $ cd devel
 
-    $ python -m djenius.bin.resolver --logging=DEBUG --unix=./devel/sock/resolver.socket
+2. Up the docker compose::
 
-1. In a console, run the backend server::
+    $ docker compose -p djenius up --build
 
-    $ python -m djenius.bin.backend --logging=DEBUG --unix=./devel/sock/backend.socket \
-        --whoosh-dir=/tmp/djraio-woosh \
-        --auth=djenius_auth_dev.DevAuthProvider \
-        --state-file=/tmp/djraio.pickle --mpv=127.0.0.1:6600 \
-        --resolver=http://127.0.0.1:8000/resolve
-
-1. In a console, run the frontend::
-
-    $ ( cd frontend && npm run start )
+You may add `-d` to the command to run in detached mode.
+Once up, the website should be accessible at `localhost:80`.
 
 Running tests
 -------------
@@ -152,7 +146,7 @@ Distributing
 
 1. Build optimized frontend bundle::
 
-    $ (c d frontend && npm run build )
+    $ (cd frontend && npm run build )
 
 1. Build the Python sdist, which bundles the frontend assets::
 
