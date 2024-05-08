@@ -19,6 +19,10 @@ class Settings:
     # Where the resolver server lives.
     RESOLVER_URL: str = "http://localhost:8000/resolve"
 
+    # Where the client can access the resolver outside of Djenius's
+    # infrastructure.
+    RESOLVER_PUBLIC_URL: str = "http://localhost:8000/resolve"
+
     # mpv host and port.
     MPV_HOST_PORT: str = "localhost:6600"
 
@@ -53,13 +57,16 @@ class Settings:
         return host, int(port)
 
     @classmethod
-    def resolver_search_url(cls, resolver):
-        return f"{cls.RESOLVER_URL}/search/{resolver}"
+    def resolver_search_url(cls, resolver, public: bool = False):
+        url = cls.RESOLVER_PUBLIC_URL if public else cls.RESOLVER_URL
+        return f"{url}/search/{resolver}"
 
     @classmethod
-    def resolver_track_url(cls, song_id: SongId):
-        return f"{cls.RESOLVER_URL}/download/{song_id}"
+    def resolver_track_url(cls, song_id: SongId, public: bool = False):
+        url = cls.RESOLVER_PUBLIC_URL if public else cls.RESOLVER_URL
+        return f"{url}/download/{song_id}"
 
     @classmethod
-    def resolver_cover_url(cls):
-        return f"{cls.RESOLVER_URL}/cover"
+    def resolver_cover_url(cls, public: bool = False):
+        url = cls.RESOLVER_PUBLIC_URL if public else cls.RESOLVER_URL
+        return f"{url}/cover"

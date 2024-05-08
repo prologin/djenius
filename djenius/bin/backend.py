@@ -33,6 +33,11 @@ class AppFeatures(CommandLineFeature):
             help="Resolver URI, without the final slash, for instance http://localhost:1234/resolve",
         )
         p.add_argument(
+            "--public-resolver",
+            required=True,
+            help="Public resolver URI, without the final slash, for instance http://localhost:1234/resolve",
+        )
+        p.add_argument(
             "--auth",
             required=True,
             help="Dotted path to a class inheriting djenius.auth.AuthProvider",
@@ -74,6 +79,7 @@ class AppFeatures(CommandLineFeature):
         Settings.QUEUE_SIZE = args.queue_size
         Settings.LIBRARY_PAGE_SIZE = args.page_size
         Settings.RESOLVER_URL = args.resolver
+        Settings.RESOLVER_PUBLIC_URL = args.public_resolver
         Settings.MPV_HOST_PORT = args.mpv
         Settings.PROMETHEUS_HOST_PORT = args.prometheus
 

@@ -202,7 +202,7 @@ class Main:
             proto.Welcome(
                 my_id=user.id,
                 caps=list(user.abilities),
-                cover_url=Settings.resolver_cover_url(),
+                cover_url=Settings.resolver_cover_url(public=True),
                 library_page_size=Settings.LIBRARY_PAGE_SIZE,
             ),
         )
