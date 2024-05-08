@@ -10,5 +10,6 @@ exec python -m djenius.bin.backend \
     --whoosh-dir=/tmp/djraio-woosh \
     --auth=djenius_auth_dev.DevAuthProvider \
     --state-file=/tmp/djraio.pickle \
-    --mpv="$MPV" \
-    --resolver="$RESOLVER/resolve"
+    --mpv="${MPV}" \
+    --resolver="${RESOLVER_URL}/resolve" \
+    --public-resolver="${PUBLIC_RESOLVER_URL}/resolve"
