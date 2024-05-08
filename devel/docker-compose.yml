@@ -17,7 +17,7 @@ services:
       - ../frontend:/home/app
       - /home/app/node_modules
     networks:
-      - frontend
+      - djenius
 
   backend:
     build:
@@ -25,14 +25,14 @@ services:
       dockerfile: Dockerfile.backend
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "7001:7001"
     environment:
       DEBUG: 1
       MPV: mpv:6600
       RESOLVER_URL: http://nginx:8000
       PUBLIC_RESOLVER_URL: http://${SERVER_HOSTPORT}
     networks:
-      - backend
+      - djenius
 
   resolver:
     build:
@@ -40,11 +40,11 @@ services:
       dockerfile: Dockerfile.resolver
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "7000:7000"
     environment:
       DEBUG: 1
     networks:
-      - outside
+      - djenius
 
   mpv:
     build:
@@ -58,7 +58,7 @@ services:
     volumes:
       - /run/user/1000/pulse/native:/run/user/1000/pulse/native
     networks:
-      - backend
+      - djenius
 
   nginx:
     image: nginx:stable-alpine
@@ -69,13 +69,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro # use local conf
       - ../frontend/build:/srv/frontend:ro # expose React "static" build
     networks:
-      - outside
-      - backend
-      - frontend
+      - djenius
 
 networks:
-  outside:
-  frontend:
-    internal: true
-  backend:
-    internal: true
+  djenius:
