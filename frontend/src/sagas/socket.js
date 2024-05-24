@@ -1,30 +1,30 @@
 /**
  * Boilerplate to wrap a native WebSocket object into a Saga channel.
  */
-import {delay, eventChannel, END, buffers} from "redux-saga";
-import {call, cancel, fork, take} from "redux-saga/effects";
+import { delay, eventChannel, END, buffers } from 'redux-saga';
+import { call, cancel, fork, take } from 'redux-saga/effects';
 
-import {RECONNECTION_DELAY, WS_ENDPOINT} from "../Settings";
+import { RECONNECTION_DELAY, WS_ENDPOINT } from '../Settings';
 
 export class WSOpen {}
 export class WSClose {}
 
 function buildSocketConnection() {
     return new Promise((resolve, reject) => {
-        console.log("Connecting to WS:", WS_ENDPOINT);
+        console.log('Connecting to WS:', WS_ENDPOINT);
         const socket = new WebSocket(WS_ENDPOINT);
         socket.onopen = function () {
-            console.log("Connected to WS");
+            console.log('Connected to WS');
             resolve(socket);
         };
         socket.onerror = function (evt) {
             reject(evt);
-        }
+        };
     });
 }
 
 function buildSocketChannel(socket) {
-    return eventChannel(emit => {
+    return eventChannel((emit) => {
         socket.onmessage = (event) => {
             emit(JSON.parse(event.data));
         };
@@ -32,8 +32,7 @@ function buildSocketChannel(socket) {
             emit(new WSClose());
             emit(END);
         };
-        socket.onerror = (event) => {
-        };
+        socket.onerror = (event) => {};
         emit(new WSOpen());
         return () => {
             // unsubscribe

@@ -1,10 +1,10 @@
-import {combineReducers} from 'redux'
+import { combineReducers } from 'redux';
 
-import * as types from '../constants/ActionType'
-import queues from './queues'
-import search from './search'
-import player from './player'
-import {can, Capability} from "../ability";
+import * as types from '../constants/ActionType';
+import queues from './queues';
+import search from './search';
+import player from './player';
+import { can, Capability } from '../ability';
 
 const initialSystemState = {
     connected: false,
@@ -39,8 +39,8 @@ const system = (state = initialSystemState, action) => {
                     ...state,
                     eventLog: {
                         ...state.eventLog,
-                        visible: !state.eventLog.visible
-                    }
+                        visible: !state.eventLog.visible,
+                    },
                 };
             }
             return state;
@@ -49,7 +49,7 @@ const system = (state = initialSystemState, action) => {
     }
 };
 
-const user = (state = {name: null, coverUrl: '', caps: []}, action) => {
+const user = (state = { name: null, coverUrl: '', caps: [] }, action) => {
     switch (action.type) {
         case types.Welcome:
             return {

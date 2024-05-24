@@ -1,4 +1,4 @@
-import * as types from '../constants/ActionType'
+import * as types from '../constants/ActionType';
 
 const initialState = {
     pause: true,
@@ -22,8 +22,8 @@ const player = (state = initialState, action) => {
                 position: state.position + 1,
             };
         default:
-            return state
+            return state;
     }
 };
 
-export default player
+export default player;

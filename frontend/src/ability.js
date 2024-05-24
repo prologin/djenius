@@ -1,4 +1,4 @@
-import {Ability, AbilityBuilder} from '@casl/ability';
+import { Ability, AbilityBuilder } from '@casl/ability';
 
 const objectName = 'all';
 
@@ -17,11 +17,16 @@ export const Capability = {
     EventLog: 'EventLog',
 };
 
-export const ControlCapabilities = [Capability.Volume, Capability.Seek, Capability.Skip, Capability.Pause];
+export const ControlCapabilities = [
+    Capability.Volume,
+    Capability.Seek,
+    Capability.Skip,
+    Capability.Pause,
+];
 
 function defineAbilities(userState) {
-    const {can, rules} = AbilityBuilder.extract();
-    console.log("defined capabilities for", userState.name, userState.caps);
+    const { can, rules } = AbilityBuilder.extract();
+    console.log('defined capabilities for', userState.name, userState.caps);
     for (let abilityName of userState.caps) {
         can(abilityName, objectName);
     }

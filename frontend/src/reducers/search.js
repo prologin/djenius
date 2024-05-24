@@ -1,14 +1,20 @@
-import * as types from '../constants/ActionType'
-import {Lockable} from "./util";
-import {bySongId} from "../util";
-import {libraryPageSize} from "../Settings";
+import * as types from '../constants/ActionType';
+import { Lockable } from './util';
+import { bySongId } from '../util';
+import { libraryPageSize } from '../Settings';
 
 export const State = {
-    empty: 0, searching: 1, doneHasMore: 2, doneEof: 3, error: 4,
+    empty: 0,
+    searching: 1,
+    doneHasMore: 2,
+    doneEof: 3,
+    error: 4,
 };
 
 export const Filter = {
-    Requested: "Requested", Banned: "Banned", Library: "Library",
+    Requested: 'Requested',
+    Banned: 'Banned',
+    Library: 'Library',
 };
 
 const initialState = {
@@ -73,17 +79,29 @@ const search = (state = initialState, action) => {
             const song = action.song;
             return {
                 ...state,
-                state: song === null ? (action.hasMore ? State.doneHasMore : State.doneEof) : State.searching,
-                results: song === null ? state.results : Lockable.appendItem(state.results, song),
+                state:
+                    song === null
+                        ? action.hasMore
+                            ? State.doneHasMore
+                            : State.doneEof
+                        : State.searching,
+                results:
+                    song === null
+                        ? state.results
+                        : Lockable.appendItem(state.results, song),
             };
         case types.SongUpdate:
             return {
                 ...state,
-                results: Lockable.updateItem(state.results, action.song, bySongId),
+                results: Lockable.updateItem(
+                    state.results,
+                    action.song,
+                    bySongId
+                ),
             };
         default:
-            return state
+            return state;
     }
 };
 
-export default search
+export default search;

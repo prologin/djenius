@@ -13,14 +13,20 @@ export const Lockable = {
         public: [...initial],
         _locked: false,
     }),
-    reset: (state) => Lockable._maybe_update(state, q => state._initial),
-    update: (state, newState, urgent) => Lockable._maybe_update(state, q => newState, urgent === undefined ? false : urgent),
+    reset: (state) => Lockable._maybe_update(state, (q) => state._initial),
+    update: (state, newState, urgent) =>
+        Lockable._maybe_update(
+            state,
+            (q) => newState,
+            urgent === undefined ? false : urgent
+        ),
     updateItem: (state, newItem, keyFunc) => ({
         ...state,
         _real: state._real.map(Lockable._applier(newItem, keyFunc)),
         public: state.public.map(Lockable._applier(newItem, keyFunc)),
     }),
-    appendItem: (state, newItem) => Lockable._maybe_update(state, q => [...q, newItem]),
+    appendItem: (state, newItem) =>
+        Lockable._maybe_update(state, (q) => [...q, newItem]),
     lock: (state) => ({
         ...state,
         _locked: true,
@@ -30,10 +36,14 @@ export const Lockable = {
         _locked: false,
         public: state._real,
     }),
-    _applier: (newItem, keyFunc) => (oldItem) => keyFunc(oldItem) === keyFunc(newItem) ? newItem : oldItem,
+    _applier: (newItem, keyFunc) => (oldItem) =>
+        keyFunc(oldItem) === keyFunc(newItem) ? newItem : oldItem,
     _maybe_update: (state, newStateFunc, urgent) => ({
         ...state,
         _real: newStateFunc(state._real),
-        public: (!urgent && state._locked) ? state.public : newStateFunc(state.public),
+        public:
+            !urgent && state._locked
+                ? state.public
+                : newStateFunc(state.public),
     }),
 };
