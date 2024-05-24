@@ -67,7 +67,7 @@ class AppFeatures(CommandLineFeature):
         p.add_argument(
             "--queue-size",
             type=int,
-            default=6,
+            default=10,
             help="Number of songs to display in the 'Up Next' queue",
         )
         p.add_argument(
@@ -93,7 +93,8 @@ class AppFeatures(CommandLineFeature):
 
 if __name__ == "__main__":
     args = CommandLineFeature.parse(
-        (ListeningFeature, LoggingFeature, AppFeatures), description="djenius backend",
+        (ListeningFeature, LoggingFeature, AppFeatures),
+        description="djenius backend",
     )
 
     logging.getLogger("aiohttp.access").setLevel(logging.WARNING)

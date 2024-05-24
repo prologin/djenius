@@ -5,6 +5,8 @@ import {
     select,
     take,
     takeLatest,
+    race,
+    call,
     throttle,
 } from 'redux-saga/effects';
 
@@ -40,6 +42,7 @@ function* pollQueue() {
         }
         yield delay(2000);
     }
+    yield delay(2000);
 }
 
 function* searchResultWatcher() {
@@ -196,6 +199,7 @@ function* websocketActions(socket) {
                     types.InternalSearchClear,
                 ]);
                 if (action.type === types.InternalSearchClear) break;
+
                 if (action.opaque !== opaque) continue;
                 if (!action.results.length) {
                     // End of results.

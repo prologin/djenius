@@ -19,7 +19,7 @@
 .button {
   align-self: center;
   width: 2.2rem;
-  margin: 0 .5rem 0 0;
+  margin: 0 0.5rem 0 0;
   @include button($text, $bg);
 }
 
@@ -47,7 +47,7 @@
 
 .searchInput {
   flex-grow: 1;
-  padding: .5rem 0;
+  padding: 0.5rem 0;
   font: inherit;
   background: none;
   border: none;
@@ -60,11 +60,11 @@
 }
 
 .searchLibrary {
-  $m: .5rem;
+  $m: 0.5rem;
   align-self: center;
   display: inline-flex;
   flex-direction: row;
-  padding: $m / 2 $m;
+  padding: $m $m;
   margin-right: $m;
   border: none;
   background-color: $bg;

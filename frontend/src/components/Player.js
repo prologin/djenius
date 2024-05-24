@@ -9,6 +9,8 @@ import {
     faStepForward,
 } from '@fortawesome/free-solid-svg-icons';
 
+import classnames from 'classnames';
+
 import { humanDuration } from '../util';
 import HeadingStub from './HeadingStub';
 import style from './Player.module.scss';
@@ -74,78 +76,101 @@ const SeekBar = ({ position, duration, onChange, onUpdate }) => {
     );
 };
 
-const Player = ({ player, song, trackSeek }) => (
-    <div className={style.player}>
-        <HeadingStub icon={player.isPlaying ? 'play' : 'pause'}>
-            <span className={style.heading}>
-                Currently {player.isPlaying ? 'playing' : 'paused'}
-            </span>
-        </HeadingStub>
-        {!song ? (
-            <div className={style.emptyContent}>
-                <FontAwesomeIcon
-                    icon="music"
-                    size="2x"
-                    className={style.paddedIcon}
-                />
-                Nothing's playing.
-            </div>
-        ) : (
-            ''
-        )}
-        {song ? (
-            <div className={style.songCard}>
-                <div
-                    className={style.coverArt}
-                    style={{ backgroundImage: `url(${coverUrl(song)})` }}
-                    title="Cover art"
-                />
-                <span className={style.title} title={song.song.title}>
-                    {song.song.title}
+const Player = ({ player, song, trackSeek, skipClicked, banClicked }) => {
+    const isAdminSong = !song ? false : song.adminIndex !== null;
+    return (
+        <div className={style.player}>
+            <HeadingStub icon={player.isPlaying ? 'play' : 'pause'}>
+                <span className={style.heading}>
+                    Currently {player.isPlaying ? 'playing' : 'paused'}
                 </span>
-                <p className={style.infoLine}>
-                    <span
-                        className={song.song.artist ? '' : style.noArtist}
-                        title={song.song.artist}
-                    >
-                        {song.song.artist ? song.song.artist : 'Unknown artist'}
+            </HeadingStub>
+            {!song ? (
+                <div className={style.emptyContent}>
+                    <FontAwesomeIcon
+                        icon="music"
+                        size="2x"
+                        className={style.paddedIcon}
+                    />
+                    Nothing's playing.
+                </div>
+            ) : (
+                ''
+            )}
+            {song ? (
+                <div className={style.songCard}>
+                    <div
+                        className={style.coverArt}
+                        style={{ backgroundImage: `url(${coverUrl(song)})` }}
+                        title="Cover art"
+                    />
+                    <span className={style.title} title={song.song.title}>
+                        {song.song.title}
                     </span>
-                    {song.song.explicit ? (
+                    <p className={style.infoLine}>
+                        <span
+                            className={song.song.artist ? '' : style.noArtist}
+                            title={song.song.artist}
+                        >
+                            {song.song.artist
+                                ? song.song.artist
+                                : 'Unknown artist'}
+                        </span>
+                        {song.song.explicit ? (
+                            <span
+                                className={style.tag}
+                                title="Contains explicit lyrics"
+                            >
+                                explicit
+                            </span>
+                        ) : (
+                            ''
+                        )}
                         <span
                             className={style.tag}
-                            title="Contains explicit lyrics"
+                            title={`played ${song.playCount} times`}
                         >
-                            explicit
+                            <FontAwesomeIcon icon="music" size="xs" />{' '}
+                            {song.playCount}
                         </span>
-                    ) : (
-                        ''
-                    )}
-                    <span
-                        className={style.tag}
-                        title={`played ${song.playCount} times`}
-                    >
-                        <FontAwesomeIcon icon="music" size="xs" />{' '}
-                        {song.playCount}
-                    </span>
-                </p>
-                <div className={style.progress}>
-                    <span className={style.position}>
-                        {humanDuration(player.position)}
-                    </span>
-                    <SeekBar
-                        position={player.position}
-                        duration={player.duration}
-                        onChange={(e) => trackSeek(e)}
-                    />
-                    <span className={style.duration}>
-                        {humanDuration(player.duration)}
-                    </span>
+                    </p>
+
+                    <div className={style.progress}>
+                        <span className={style.position}>
+                            {humanDuration(player.position)}
+                        </span>
+                        <SeekBar
+                            position={player.position}
+                            duration={player.duration}
+                            onChange={(e) => trackSeek(e)}
+                        />
+                        <span className={style.duration}>
+                            {humanDuration(player.duration)}
+                        </span>
+                    </div>
+
+                    <div className={style.ban}>
+                        {!isAdminSong && can(Capability.Ban) && (
+                            <button
+                                className={classnames(
+                                    style.button,
+                                    style.banButton
+                                )}
+                                onClick={() =>
+                                    banClicked(song) || skipClicked()
+                                }
+                                title="Ban this song (cannot be played nor searched)"
+                            >
+                                <FontAwesomeIcon icon="gavel" />
+                            </button>
+                        )}
+                    </div>
                 </div>
-            </div>
-        ) : (
-            ''
-        )}
-    </div>
-);
+            ) : (
+                ''
+            )}
+        </div>
+    );
+};
 
 export default Player;

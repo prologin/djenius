@@ -16,5 +16,15 @@ export const Player = connect(
                     position: parseInt(parseFloat(position)),
                 });
         },
+        skipClicked() {
+            can(Capability.Skip) && dispatch({ type: types.Skip });
+        },
+        banClicked(song) {
+            dispatch({
+                type: types.SetBanned,
+                songId: song.song.id,
+                isBanned: song.state !== 'Banned',
+            });
+        },
     })
 )(PlayerComponent);
