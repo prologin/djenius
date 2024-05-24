@@ -134,6 +134,14 @@ containers.
 You may add `-d` to the command to run in detached mode.
 Once up, the website should be accessible at `localhost:80`.
 
+If you want to contribute, please run
+
+```
+pre-commit install
+```
+
+To format every commit with prettier
+
 Running tests
 -------------
 
