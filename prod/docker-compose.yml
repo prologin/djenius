@@ -1,0 +1,77 @@
+version: "3"
+
+services:
+  # In production, the frontend is just a bunch of static files
+  # frontend:
+  #   build:
+  #     context: ../frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DEV: 1
+  #     DJENIUS_SOCKET_HOST: ${SERVER_HOSTPORT}
+  #     CHOKIDAR_USEPOLLING: "true" # Auto reload react
+  #     CHOKIDAR_INTERVAL: 1000
+  #     WATCHPACK_POLLING: "true"
+  #   volumes:
+  #     - ../frontend:/home/app
+  #     - /home/app/node_modules
+  #   networks:
+  #     - djenius
+
+  backend:
+    build:
+      context: ../
+      dockerfile: Dockerfile.backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    environment:
+      DEBUG: 1
+      MPV: ${MPV_HOSTPORT}
+      RESOLVER_URL: http://nginx:8000
+      PUBLIC_RESOLVER_URL: http://${SERVER_HOSTPORT}
+    networks:
+      - djenius
+
+  resolver:
+    build:
+      context: ../
+      dockerfile: Dockerfile.resolver
+    restart: unless-stopped
+    ports:
+      - "${RESOLVER_PORT}:${RESOLVER_PORT}"
+    environment:
+      DEBUG: 1
+    networks:
+      - djenius
+
+  # MPV player will be on another computer than the finale's server
+  # mpv:
+  #   build:
+  #     context: ./mpv/
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6600:6600"
+  #   environment:
+  #     PULSE_SERVER: unix:/run/user/1000/pulse/native
+  #   user: "1000:1000"
+  #   volumes:
+  #     - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+  #   networks:
+  #     - djenius
+
+  # nginx:
+  #   image: nginx:stable-alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro # use local conf
+  #     - ../frontend/build:/srv/frontend:ro # expose React "static" build
+  #   networks:
+  #     - djenius
+
+networks:
+  djenius:

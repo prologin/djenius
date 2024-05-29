@@ -25,10 +25,10 @@ services:
       dockerfile: Dockerfile.backend
     restart: unless-stopped
     ports:
-      - "7001:7001"
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     environment:
       DEBUG: 1
-      MPV: mpv:6600
+      MPV: ${MPV_HOSTPORT}
       RESOLVER_URL: http://nginx:8000
       PUBLIC_RESOLVER_URL: http://${SERVER_HOSTPORT}
     networks:
@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile.resolver
     restart: unless-stopped
     ports:
-      - "7000:7000"
+      - "${RESOLVER_PORT}:${RESOLVER_PORT}"
     environment:
       DEBUG: 1
     networks:
