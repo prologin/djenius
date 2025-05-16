@@ -120,7 +120,8 @@ class Main:
             logger.debug("I wouldn't mind playing the next song, but queue is empty!")
             return
         self.song_loading_in_mpv = top_song
-        await self.mpv.load_uri(Settings.resolver_track_url(top_song.song.id))
+        # public is need when mpv is not on the same server
+        await self.mpv.load_uri(Settings.resolver_track_url(top_song.song.id, public=True))
         # In a few seconds, consider the song failed loading, except if mpv tells us
         # it was successful before that deadline.
         asyncio.create_task(self.mpv_load_deadline())
