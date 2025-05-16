@@ -376,6 +376,16 @@ class Main:
         top = list(self.songs.top_songs(Settings.QUEUE_SIZE, user))
         await self.send_to(ws, proto.QueueResponse(queue=top, urgent=urgent))
 
+    async def process_message(self, semaphore, ws, message):
+        async with semaphore:
+            await self.on_ws_message(ws, message)
+
+    async def worker(self, semaphore, message_queue):
+        while True:
+            ws, message = await message_queue.get()
+            await self.process_message(semaphore, ws, message)
+            message_queue.task_done()
+
     async def ws_handler(self, request: aiohttp.web.Request):
         user_id = self.auth.get_user_id(request)
         user = self.auth.get_user(user_id)
@@ -387,9 +397,14 @@ class Main:
         await ws.prepare(request)
         try:
             await self.on_ws_join(ws, user)
+            # Start workers to process messages
+            message_queue = asyncio.Queue()
+            semaphore = asyncio.Semaphore(3)
+            for _ in range(3):
+                asyncio.create_task(self.worker(semaphore, message_queue))
             async for msg in ws:
                 if msg.type == aiohttp.WSMsgType.TEXT:
-                    await self.on_ws_message(ws, msg.data)
+                    await message_queue.put((ws, msg.data))
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     logger.warning("WS error", ws.exception())
         finally:
