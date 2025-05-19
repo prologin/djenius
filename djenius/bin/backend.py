@@ -10,6 +10,7 @@ import aiohttp.web
 
 import djenius.server.main
 from djenius.bin import CommandLineFeature, ListeningFeature, LoggingFeature, serve
+from djenius.server.main import logger
 from djenius.server.settings import Settings
 
 
@@ -48,6 +49,11 @@ class AppFeatures(CommandLineFeature):
             help="mpv host:port, default port is 6600",
         )
         p.add_argument(
+            "--mvp-windows",
+            default='False',
+            help="Whether to use mpv windows (via Named Pipe TCP Proxy) or not",
+        )
+        p.add_argument(
             "--prometheus",
             default="localhost:9090",
             help="Prometheus exporter host:port, default port is 9090",
@@ -81,6 +87,7 @@ class AppFeatures(CommandLineFeature):
         Settings.RESOLVER_URL = args.resolver
         Settings.RESOLVER_PUBLIC_URL = args.public_resolver
         Settings.MPV_HOST_PORT = args.mpv
+        Settings.MPV_WINDOWS = args.mvp_windows.lower() == 'true'
         Settings.PROMETHEUS_HOST_PORT = args.prometheus
 
 

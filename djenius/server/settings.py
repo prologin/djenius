@@ -41,6 +41,9 @@ class Settings:
     # How many songs to display in the "Up Next" list.
     QUEUE_SIZE: int = 6
 
+    # Whether to use mpv windows (via Named Pipe TCP Proxy) or not.
+    MPV_WINDOWS: bool = True
+
     @classmethod
     def auth_provider(cls) -> Type[AuthProvider]:
         path, cls_name = cls.AUTH_PROVIDER.rsplit(".", 1)

@@ -156,6 +156,14 @@ class Main:
                 self.mpv_state.is_playing = event.is_playing
                 await self.maybe_broadcast_mpv_state()
 
+            if isinstance(event, mpv.MpvIsAvailable):
+                if event.is_available: # on mpv connect
+                    self.mpv_state.song = None
+                    await self.broadcast_mpv_state()
+                    await self.maybe_load_next_song()
+
+
+
     def list_songs(self, user: proto.User, offset: int):
         yield from self.songs.all_songs(Settings.LIBRARY_PAGE_SIZE, offset, user)
 

@@ -9,6 +9,8 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
+from djenius.server.settings import Settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,12 +53,17 @@ class MpvJsonProtocol(asyncio.Protocol):
         self._connection_status = asyncio.Queue()
         self._queue = asyncio.Queue()
         self._inbound_buf = b""
+        self._isReady = False
 
     def connection_made(self, transport):
+        if Settings.MPV_WINDOWS:  # wait header to be received
+            return
+        self._isReady = True
         self._connection_status.put_nowait(True)
         logger.debug("Connection made to mpv")
 
     def connection_lost(self, exc):
+        self._isReady = False
         self._connection_status.put_nowait(False)
         logger.debug("Connection lost to mpv")
 
@@ -66,6 +73,24 @@ class MpvJsonProtocol(asyncio.Protocol):
         lines from JSON and put them in the queue.
         """
         self._inbound_buf += data
+
+        if not self._isReady:
+            if self._inbound_buf.endswith(b"\xff\xfb\x01\xff\xfb\x03"):  # end of Named Pipe TCP Proxy header
+                self._inbound_buf = b""  # clear buffer
+
+                self._isReady = True
+                self._connection_status.put_nowait(True)
+                logger.debug("Connection made to mpv")
+            return
+        elif Settings.MPV_WINDOWS:
+            if self._inbound_buf.endswith(b'attaching console,wait ...'): # end of Named Pipe TCP Proxy
+                self._inbound_buf = b""
+
+                self._isReady = False
+                self._connection_status.put_nowait(False)
+                logger.debug("Connection lost to mpv")
+                return
+
         parts = self._inbound_buf.split(b"\n")
         while len(parts) > 1:
             head, *parts = parts
@@ -146,8 +171,8 @@ class MpvClient:
         channel: asyncio.Queue
         channel = self.pending_requests[this_id] = asyncio.Queue(1)
         message = (
-            json.dumps({"request_id": this_id, "command": list(command)}).encode()
-            + b"\n"
+                json.dumps({"request_id": this_id, "command": list(command)}).encode()
+                + b"\n"
         )
         self.transport.write(message)
         try:
@@ -166,7 +191,10 @@ class MpvClient:
         if event["event"] == "property-change":
             if event["name"] == "time-pos":
                 try:
-                    pos = int(event["data"])
+                    if 'data' not in event:  # when no file is loaded
+                        pos = 0
+                    else:
+                        pos = int(event["data"])
                     await self.event_queue.put(MpvPositionChanged(pos))
                 except TypeError:
                     pass

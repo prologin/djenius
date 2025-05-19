@@ -12,4 +12,5 @@ exec python -m djenius.bin.backend \
     --state-file=/tmp/djraio.pickle \
     --mpv="${MPV}" \
     --resolver="${RESOLVER_URL}/resolve" \
-    --public-resolver="${PUBLIC_RESOLVER_URL}/resolve"
+    --public-resolver="${PUBLIC_RESOLVER_URL}/resolve" \
+    --mvp-windows="${MPV_WINDOWS}"

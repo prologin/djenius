@@ -6,3 +6,4 @@ build/
 .pytest*/
 *.pyc
 node_modules
+.idea
