@@ -18,7 +18,8 @@ const App = () => (
         <SystemOverlay />
         {/*<TTSModal/>*/}
         <header className={style.header}>
-            <h1>djenius</h1>
+            <img src="/logo.png" alt="djenius" />
+            <h1>DJenius</h1>
             <User />
         </header>
         <Player />
