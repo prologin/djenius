@@ -1,3 +1,5 @@
+import signal
+
 from aiohttp import web
 import argparse
 import asyncio
@@ -41,6 +43,19 @@ class ListeningFeature(CommandLineFeature):
         listen.add_argument("--listen", help="Host and port")
 
 
+def register_signal_handlers(loop):
+    """
+    Register signal handlers for SIGINT and SIGTERM.
+    """
+    def handle_signal(signal, loop):
+        logging.info(f"Received signal {signal.name}, shutting down...")
+        for task in asyncio.all_tasks(loop):
+            task.cancel()
+        loop.stop()
+
+    loop.add_signal_handler(signal.SIGINT, lambda: handle_signal(signal.SIGINT, loop))
+    loop.add_signal_handler(signal.SIGTERM, lambda: handle_signal(signal.SIGTERM, loop))
+
 def serve(logger, routes, args, pre_init, startup, cleanup):
     """
     Boilerplate to initialize an aiohttp server.
@@ -82,6 +97,9 @@ def serve(logger, routes, args, pre_init, startup, cleanup):
     logger.info("site starting")
     site = loop.run_until_complete(setup())
     logger.info("site started: %s", site.name)
+
+    # Register signal handlers.
+    register_signal_handlers(loop)
 
     try:
         loop.run_forever()
