@@ -97,6 +97,8 @@ function* onWebsocketMessage(payload) {
                     caps: data.caps,
                     coverUrl: data.coverUrl,
                     libraryPageSize: data.libraryPageSize,
+                    loginPath: data.loginPath,
+                    logoutPath: data.logoutPath,
                 },
             });
             break;

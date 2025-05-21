@@ -110,6 +110,8 @@ class Welcome:
     cover_url: str
     library_page_size: int
     caps: List[Ability] = field(default_factory=list)
+    login_path: str = None
+    logout_path: str = None
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)

@@ -7,9 +7,15 @@ import style from './User.module.scss';
 library.add(faUser);
 
 const User = ({ user }) => (
-    <div className={style.user}>
+    <div className={style.user} style={{textAlign: 'center'}}>
         <FontAwesomeIcon icon="user" />{' '}
-        {user.name === null ? <em>anonymous</em> : user.name}
+      {user.name === null ? <>
+        <em>anonymous</em>
+        {user.loginPath !== undefined && <><br/><span>(<a href={user.loginPath}>Login</a>)</span></>}
+        </> : <>
+        {user.name}
+        {user.logoutPath !== undefined && <><br/><span>(<a href={user.logoutPath}>Logout</a>)</span></>}
+      </>}
     </div>
 );
 

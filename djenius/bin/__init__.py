@@ -41,12 +41,15 @@ class ListeningFeature(CommandLineFeature):
         listen.add_argument("--listen", help="Host and port")
 
 
-def serve(logger, routes, args, startup, cleanup):
+def serve(logger, routes, args, pre_init, startup, cleanup):
     """
     Boilerplate to initialize an aiohttp server.
     """
     app = web.Application()
     app.add_routes(routes)
+
+    if callable(pre_init):
+        pre_init(app)
 
     if callable(startup):
         app.on_startup.append(startup)

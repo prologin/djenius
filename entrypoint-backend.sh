@@ -8,7 +8,7 @@ exec python -m djenius.bin.backend \
     --logging=DEBUG \
     --listen=0.0.0.0:7001 \
     --whoosh-dir=/tmp/djraio-woosh \
-    --auth=djenius_auth_dev.DevAuthProvider \
+    --auth=djenius_auth_oauth.OauthAuthProvider \
     --state-file=/tmp/djraio.pickle \
     --mpv="${MPV}" \
     --resolver="${RESOLVER_URL}/resolve" \

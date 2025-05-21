@@ -103,6 +103,7 @@ if __name__ == "__main__":
         logger=djenius.server.main.logger,
         routes=[aiohttp.web.get("/ws", main.ws_handler)],
         args=args,
+        pre_init=main.pre_init,
         startup=main.on_init,
         cleanup=main.on_shutdown,
     )

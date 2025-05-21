@@ -39,7 +39,7 @@ class UdbSyncAuthProvider(AuthProvider):
         t.daemon = True
         t.start()
 
-    def get_user_id(self, request) -> Optional[UserId]:
+    async def get_user_id(self, request) -> Optional[UserId]:
         return request.headers.get("X-SSO-User")
 
     def get_user(self, user_id: Optional[UserId]) -> Optional[User]:

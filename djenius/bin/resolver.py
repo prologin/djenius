@@ -97,6 +97,7 @@ if __name__ == "__main__":
             aiohttp.web.get("/cover/{resolver}/{opaque}", handle_cover_download),
         ],
         args=args,
+        pre_init=None,
         startup=startup,
         cleanup=cleanup,
     )

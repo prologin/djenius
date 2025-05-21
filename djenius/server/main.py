@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class Main:
     def __init__(self):
+        self.auth = None
         self.mpv = mpv.MpvClient()
 
         self.clients = weakref.WeakSet()
@@ -24,9 +25,12 @@ class Main:
         self.next_mpv_update_is_urgent: bool = False
         self.load_timeout_handle = None
 
-    async def on_init(self, app):
+    def pre_init(self, app):
         provider = Settings.auth_provider()
         self.auth = provider()
+        self.auth.pre_init(app)
+
+    async def on_init(self, app):
         await self.auth.init()
 
         search = WhooshSongSearch(Settings.WHOOSH_DIRECTORY)
@@ -157,12 +161,10 @@ class Main:
                 await self.maybe_broadcast_mpv_state()
 
             if isinstance(event, mpv.MpvIsAvailable):
-                if event.is_available: # on mpv connect
+                if event.is_available:  # on mpv connect
                     self.mpv_state.song = None
                     await self.broadcast_mpv_state()
                     await self.maybe_load_next_song()
-
-
 
     def list_songs(self, user: proto.User, offset: int):
         yield from self.songs.all_songs(Settings.LIBRARY_PAGE_SIZE, offset, user)
@@ -213,6 +215,8 @@ class Main:
                 caps=list(user.abilities),
                 cover_url=Settings.resolver_cover_url(public=True),
                 library_page_size=Settings.LIBRARY_PAGE_SIZE,
+                login_path=self.auth.get_login_path(),
+                logout_path=self.auth.get_logout_path(),
             ),
         )
         await self.send_to(ws, self.mpv_state)
@@ -395,7 +399,7 @@ class Main:
             message_queue.task_done()
 
     async def ws_handler(self, request: aiohttp.web.Request):
-        user_id = self.auth.get_user_id(request)
+        user_id = await self.auth.get_user_id(request)
         user = self.auth.get_user(user_id)
         if user is None:
             raise aiohttp.web.HTTPForbidden()
