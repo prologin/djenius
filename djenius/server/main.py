@@ -73,9 +73,10 @@ class Main:
             await self.on_song_updated(updated_song_id)
 
     async def player_state_loop(self):
+        rate = 2
         while True:
-            await asyncio.sleep(2)
-            await self.on_player_state_tick()
+            await asyncio.sleep(rate)
+            await self.on_player_state_tick(rate)
 
     async def mpv_load_deadline(self):
         await asyncio.sleep(7)
@@ -84,7 +85,13 @@ class Main:
             self.song_loading_in_mpv = None
             await self.maybe_load_next_song()
 
-    async def on_player_state_tick(self):
+    async def on_player_state_tick(self, rate: int):
+        if self.mpv_state.is_playing and self.mpv_state.song is not None:
+            self.last_mpv_state.position += rate
+            delta = abs(self.mpv_state.position - self.last_mpv_state.position)
+            if delta == 1:  # for preventing send update when time is not changed (or the difference is too small)
+                self.last_mpv_state.position = self.mpv_state.position
+
         if self.mpv_state != self.last_mpv_state:
             await self.broadcast_mpv_state()
             self.last_mpv_state = copy.copy(self.mpv_state)
