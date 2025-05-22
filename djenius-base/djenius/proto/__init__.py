@@ -132,6 +132,12 @@ class SongUpdate:
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
+class RequestUpdate:
+    song: StatefulSong
+
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
 class SearchRequest:
     query: str
     opaque: str
@@ -163,9 +169,8 @@ class QueueResponse:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class SongSubUnsub:
-    subscribe: List[SongId] = field(default_factory=list)
-    unsubscribe: List[SongId] = field(default_factory=list)
-
+    subscribe: List[str] = field(default_factory=list)
+    unsubscribe: List[str] = field(default_factory=list)
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass

@@ -15,6 +15,7 @@ import { updateAbilities } from '../ability';
 import buildWebsocket, { WSClose, WSOpen } from './socket';
 import { bySongId } from '../util';
 import { updateSettings } from '../Settings';
+import { Filter } from '../reducers/search';
 
 /**
  * Send a PLAYER_TICK every second to update the player position. This is much
@@ -126,6 +127,25 @@ function* onWebsocketMessage(payload) {
                 results: data.results,
             });
             break;
+        case types.RequestUpdate:
+            const results = yield select((state) => state.search.results);
+            const songUpdate = data.song.song;
+            const song = results._real.find((s) => s.id === songUpdate.id);
+            if (song) break;
+            yield put({
+                type: types.InternalAppendSearchResult,
+                song: data.song,
+            });
+            yield put({
+                type: types.SongSubUnsub,
+                subscribe: [songUpdate.id],
+            });
+            yield put({
+                type: types.InternalAppendSearchResult,
+                hasMore: false,
+                song: null,
+            });
+            break;
         // case types.SYSTEM_EVENTLOG:
         //     yield put({
         //         type: types.SYSTEM_EVENTLOG,
@@ -180,6 +200,17 @@ function* websocketActions(socket) {
             const searchState = yield select((state) => state.search);
             const hasQuery = searchState.query && searchState.query.length;
             const hasFilter = !!searchState.filter;
+            if (searchState.filter === Filter.Requested) {
+                yield put({
+                    type: types.SongSubUnsub,
+                    subscribe: ['requested'],
+                });
+            } else {
+                yield put({
+                    type: types.SongSubUnsub,
+                    unsubscribe: ['requested'],
+                });
+            }
             if (!hasQuery && !hasFilter) {
                 console.log('clear search');
                 yield put({ type: types.InternalSearchClear });

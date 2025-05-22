@@ -15,6 +15,7 @@ export const SetVolume = 'SetVolume';
 export const Skip = 'Skip';
 export const SongSubUnsub = 'SongSubUnsub';
 export const SongUpdate = 'SongUpdate';
+export const RequestUpdate = 'RequestUpdate';
 export const Vote = 'Vote';
 export const Welcome = 'Welcome';
 

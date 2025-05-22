@@ -55,6 +55,14 @@ const SearchingSpinner = () => (
     </div>
 );
 
+function isNoTextFilter(filter) {
+    return (
+        filter === Filter.Library ||
+        filter === Filter.Requested ||
+        filter === Filter.Banned
+    );
+}
+
 const Search = ({
     startSearch,
     state,
@@ -76,11 +84,11 @@ const Search = ({
     <div className={style.search}>
         <HeadingStub
             className={classnames({
-                [style.spaceBetween]: filter === Filter.Library,
+                [style.spaceBetween]: isNoTextFilter(filter),
             })}
-            icon={filter === Filter.Library ? 'book' : 'search'}
+            icon={isNoTextFilter(filter) ? 'book' : 'search'}
         >
-            {filter !== Filter.Library ? (
+            {!isNoTextFilter(filter) ? (
                 <>
                     <input
                         className={style.searchInput}
@@ -100,27 +108,29 @@ const Search = ({
                         <FontAwesomeIcon icon="times" />
                     </button>
                     <Can do="Accept" on="all">
-                        <Checkbox
-                            checked={filter === Filter.Requested}
-                            onChange={() =>
-                                searchFilter(query, Filter.Requested)
-                            }
-                            title="Show requested only"
+                        <button
+                          className={style.searchLibrary}
+                          onClick={() => searchFilter(query, Filter.Requested)}
+                          title="Show requested only"
                         >
-                            R
-                        </Checkbox>
+                          Req.
+                        </button>
                     </Can>
                     <Can do="Ban" on="all">
-                        <Checkbox
-                            checked={filter === Filter.Banned}
-                            onChange={() => searchFilter(query, Filter.Banned)}
-                            title="Show banned only"
+
+                        <button
+                          className={style.searchLibrary}
+                          style={{ marginLeft: '0.5em' }}
+                          onClick={() => searchFilter(query, Filter.Banned)}
+                          title="Show banned only"
                         >
-                            <FontAwesomeIcon icon="gavel" />
-                        </Checkbox>
+                          <FontAwesomeIcon icon="gavel" />
+                          &nbsp;Ban.
+                        </button>
                     </Can>
                     <button
                         className={style.searchLibrary}
+                        style={{ marginLeft: '0.5em' }}
                         onClick={() => searchFilter(query, Filter.Library)}
                         title="All songs in the library"
                     >
@@ -130,10 +140,11 @@ const Search = ({
                 </>
             ) : (
                 <>
-                    All songs
+                    {filter === Filter.Library ? "All songs" :
+                      (filter === Filter.Requested ? "Requested songs" : "Banned songs")}
                     <button
                         className={style.searchLibrary}
-                        onClick={() => searchFilter(query, Filter.Library)}
+                        onClick={() => searchFilter(query, filter)}
                     >
                         <FontAwesomeIcon icon="search" />
                         &nbsp;Back to search
@@ -172,7 +183,7 @@ const Search = ({
         state === State.doneEof ? (
             <div className={style.scrollArea}>
                 {(state === State.doneHasMore || state === State.doneEof) &&
-                filter === Filter.Library &&
+                isNoTextFilter(filter) &&
                 offset > 0 ? (
                     <button onClick={() => searchPreviousPage()}>
                         Previous Page
@@ -192,7 +203,7 @@ const Search = ({
                     />
                 ))}
                 {state === State.searching ? <SearchingSpinner /> : ''}
-                {state === State.doneHasMore && filter === Filter.Library ? (
+                {state === State.doneHasMore && isNoTextFilter(filter) ? (
                     <button onClick={() => searchNextPage()}>Next Page</button>
                 ) : (
                     ''

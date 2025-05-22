@@ -104,7 +104,18 @@ class Main:
         def gen_send_to():
             for ws in set(self.clients):
                 if id not in ws["subscriptions"]:
+                    if "requested" in ws["subscriptions"]:
+                        user = self.auth.get_user(ws["user_id"])
+                        if user is None or not user.can(proto.Ability.accept):
+                            continue
+                        if not self.songs.is_song_requested(id):
+                            continue
+                        song = self.songs.for_user_display(id, user)
+                        if not song:
+                            continue
+                        yield self.send_to(ws, proto.RequestUpdate(song=song))
                     continue
+
                 user = self.auth.get_user(ws["user_id"])
                 if user is None:
                     continue
@@ -168,6 +179,10 @@ class Main:
 
     def list_songs(self, user: proto.User, offset: int):
         yield from self.songs.all_songs(Settings.LIBRARY_PAGE_SIZE, offset, user)
+    def request_songs(self, user: proto.User, offset: int):
+        yield from self.songs.request_songs(Settings.LIBRARY_PAGE_SIZE, offset, user)
+    def banned_songs(self, user: proto.User, offset: int):
+        yield from self.songs.banned_songs(Settings.LIBRARY_PAGE_SIZE, offset, user)
 
     async def search(self, query: str, user: proto.User, channel):
         n = Settings.SEARCH_COUNT
@@ -347,24 +362,15 @@ class Main:
 
             if msg.filter == "Library":
                 songs = list(self.list_songs(user, msg.offset or 0))
-                if songs[-1] is None:
-                    if songs[:-1]:
-                        await self.send_to(
-                            ws,
-                            proto.SearchResponse(
-                                results=songs[:-1], opaque=msg.opaque
-                            ),
-                        )
-                    await self.send_to(
-                        ws, proto.SearchResponse(results=[], opaque=msg.opaque)
-                    )
-                else:
-                    await self.send_to(
-                        ws,
-                        proto.SearchResponse(
-                            results=songs, opaque=msg.opaque, has_more=True
-                        ),
-                    )
+                await self.make_song_list(msg, songs, ws)
+                return
+            if msg.filter == "Requested":
+                songs = list(self.request_songs(user, msg.offset or 0))
+                await self.make_song_list(msg, songs, ws)
+                return
+            if msg.filter == "Banned":
+                songs = list(self.banned_songs(user, msg.offset or 0))
+                await self.make_song_list(msg, songs, ws)
                 return
 
             channel: asyncio.Queue = asyncio.Queue()
@@ -383,6 +389,27 @@ class Main:
 
             await asyncio.wait([result_sender(), self.search(msg.query, user, channel)])
             return
+
+    async def make_song_list(self, msg, songs, ws):
+        if songs[-1] is None:
+            if songs[:-1]:
+                await self.send_to(
+                    ws,
+                    proto.SearchResponse(
+                        results=songs[:-1], opaque=msg.opaque
+                    ),
+                )
+            await self.send_to(
+                ws, proto.SearchResponse(results=[], opaque=msg.opaque)
+            )
+        else:
+            await self.send_to(
+                ws,
+                proto.SearchResponse(
+                    results=songs, opaque=msg.opaque, has_more=True
+                ),
+            )
+        return
 
     async def send_top_songs(self, ws, user: proto.User, urgent: bool = False):
         top = list(self.songs.top_songs(Settings.QUEUE_SIZE, user))

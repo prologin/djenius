@@ -132,7 +132,7 @@ class SongRegistry:
         return self.for_user_display(song.id, user)
 
     async def add_all(
-        self, songs: Iterable[Song], user: User
+            self, songs: Iterable[Song], user: User
     ) -> Collection[StatefulSong]:
         added = [await self.add(song, user, SongState.new) for song in songs]
         return [
@@ -229,11 +229,28 @@ class SongRegistry:
 
     def all_songs(self, n: int, offset: int, user: User):
         c = 0
-        slice = self._songs.islice(offset)
-        for id in slice:
-            song = self._songs[id]
+        filtered_songs = {id: song for id, song in self._songs.items() if user.can_see_song_in_search(song.state)}
+        yield from self.list_song(c, filtered_songs, n, offset, user)
+
+    def request_songs(self, n: int, offset: int, user: User):
+        c = 0
+        filtered_songs = {id: song for id, song in self._songs.items() if
+                          song.state == SongState.new and song.vote_cache >= 1 and user.can_see_song_in_search(
+                              song.state)}
+        yield from self.list_song(c, filtered_songs, n, offset, user)
+
+    def banned_songs(self, n: int, offset: int, user: User):
+        c = 0
+        filtered_songs = {id: song for id, song in self._songs.items() if
+                          song.state == SongState.banned and user.can_see_song_in_search(song.state)}
+        yield from self.list_song(c, filtered_songs, n, offset, user)
+
+    def list_song(self, c, filtered_songs, n, offset, user):
+        slice = itertools.islice(list(filtered_songs.values()), offset, None)
+        for isong in slice:
+            song = self._songs[isong.song.id]
             if user.can_see_song_in_search(song.state):
-                yield self.for_user_display(id, user)
+                yield self.for_user_display(song.song.id, user)
                 c += 1
                 if c == n:
                     break
@@ -267,8 +284,8 @@ class SongRegistry:
     def _stateful_kwargs(self, song: ISong) -> Mapping[str, Any]:
         added_by = None
         if (
-            song.added_by is not None
-            and (user := self._auth_provider.get_user(song.added_by)) is not None
+                song.added_by is not None
+                and (user := self._auth_provider.get_user(song.added_by)) is not None
         ):
             added_by = user.id
         return dict(
@@ -301,7 +318,7 @@ class SongRegistry:
         )
 
     def _for_user_display_it(
-        self, songs: Iterable[ISong], user: User, is_admin: bool = False
+            self, songs: Iterable[ISong], user: User, is_admin: bool = False
     ) -> Iterator[StatefulSong]:
         admin_counter = itertools.count()
         for song in songs:
@@ -329,7 +346,7 @@ class SongRegistry:
         return self._song_map[key].rank()
 
     async def _modify(
-        self, id: SongId, func: Callable[[ISong], Awaitable[None]]
+            self, id: SongId, func: Callable[[ISong], Awaitable[None]]
     ) -> O[SongId]:
         song = self._song_map.get(id)
         if song is None:
@@ -343,3 +360,9 @@ class SongRegistry:
 
     async def _song_updated(self, id: SongId) -> None:
         await self.song_updated_signal.put(id)
+
+    def is_song_requested(self, id: SongId) -> bool:
+        song = self._song_map.get(id)
+        if song is None:
+            return False
+        return song.state == SongState.new and song.vote_cache >= 1
